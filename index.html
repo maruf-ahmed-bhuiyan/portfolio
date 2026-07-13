@@ -424,11 +424,12 @@
             <div class="relative aspect-[4/3] w-full bg-slate-100">
               <img
                 id="gis-map"
-                src="qgis-map.png"
+                src="qgis-map.svg"
+                data-fallbacks="qgis-map.png,qgis-map.jpg,qgis-map.jpeg"
                 alt="QGIS spatial map showing district-level distribution of outbreak activity across Bangladesh"
-                class="h-full w-full object-cover"
+                class="h-full w-full object-contain"
                 loading="lazy"
-                onerror="this.style.display='none'; document.getElementById('gis-map-fallback').style.display='flex';"
+                onerror="(function(el){var f=(el.getAttribute('data-fallbacks')||'').split(',').filter(Boolean);if(f.length){el.src=f.shift();el.setAttribute('data-fallbacks',f.join(','));}else{el.style.display='none';document.getElementById('gis-map-fallback').style.display='flex';}})(this);"
               />
               <div id="gis-map-fallback" class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
                 <svg class="h-10 w-10 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -436,7 +437,8 @@
                 </svg>
                 <p class="text-sm font-medium text-ink">QGIS spatial map</p>
                 <p class="max-w-xs text-xs text-muted">
-                  Add an image named <code class="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px]">qgis-map.png</code>
+                  Add an image named <code class="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px]">qgis-map.svg</code>
+                  (or <code class="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px]">.png</code>/<code class="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px]">.jpg</code>)
                   in the same folder as this page and it will load here automatically.
                 </p>
               </div>
