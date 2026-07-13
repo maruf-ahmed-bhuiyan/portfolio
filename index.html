@@ -17,13 +17,28 @@
             mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
           },
           colors: {
+            // Material Design 3 inspired tonal palette
             accent: {
-              DEFAULT: '#3b5b8c', // muted academic slate-blue
+              DEFAULT: '#3b5b8c', // primary — academic slate-blue
               hover: '#2f4a75',
-              soft: '#eef2f8',
+              soft: '#e8eef7',    // primary container (light)
+              deep: '#22355a',
+            },
+            tertiary: {
+              DEFAULT: '#3f7d6f', // tertiary — muted teal
+              hover: '#336457',
+              soft: '#e2f1ec',    // tertiary container (light)
+            },
+            secondary: {
+              DEFAULT: '#8a5a3c', // secondary — warm terracotta accent
+              soft: '#f6ece4',
             },
             ink: '#1a1d21',
             muted: '#5b6470',
+          },
+          boxShadow: {
+            'md3': '0 1px 2px rgba(26,29,33,0.06), 0 4px 16px -6px rgba(59,91,140,0.18)',
+            'md3-lg': '0 2px 4px rgba(26,29,33,0.06), 0 12px 32px -8px rgba(59,91,140,0.28)',
           },
         },
       },
@@ -89,6 +104,49 @@
       background-size: 44px 44px;
     }
 
+    /* ---------- Material Design 3 visual flair ---------- */
+    /* Soft colour blobs used as decorative backdrops */
+    .blob {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(60px);
+      opacity: 0.55;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-primary   { background: radial-gradient(circle at 30% 30%, #6f92c8, transparent 70%); }
+    .blob-tertiary  { background: radial-gradient(circle at 30% 30%, #6fb6a4, transparent 70%); }
+    .blob-secondary { background: radial-gradient(circle at 30% 30%, #d0a488, transparent 70%); }
+
+    @keyframes floatSlow {
+      0%,100% { transform: translate3d(0,0,0) scale(1); }
+      50%     { transform: translate3d(0,-18px,0) scale(1.06); }
+    }
+    .blob-float { animation: floatSlow 14s ease-in-out infinite; }
+
+    /* Animated gradient accent bar under section eyebrows */
+    .accent-bar {
+      display: inline-block;
+      height: 3px;
+      width: 44px;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #3b5b8c, #3f7d6f);
+    }
+
+    /* MD3 elevation lift on interactive cards */
+    .lift { transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out); }
+    .lift:hover { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(26,29,33,0.06), 0 16px 36px -10px rgba(59,91,140,0.30); }
+
+    /* Gradient hairline divider */
+    .grad-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,91,140,0.35), rgba(63,125,111,0.35), transparent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .blob-float { animation: none !important; }
+    }
+
     /* Bar chart hover */
     .bar-row:hover .bar-fill { filter: brightness(1.08); }
     .bar-row:focus-within .bar-fill { filter: brightness(1.08); }
@@ -121,9 +179,10 @@
         <li><a href="#portfolio" class="transition-colors hover:text-accent">Portfolio</a></li>
         <li><a href="#experience" class="transition-colors hover:text-accent">Experience</a></li>
         <li><a href="#training" class="transition-colors hover:text-accent">Training</a></li>
+        <li><a href="#cv" class="transition-colors hover:text-accent">CV</a></li>
         <li><a href="#contact" class="transition-colors hover:text-accent">Contact</a></li>
       </ul>
-      <a href="#contact" class="rounded-full border border-accent/30 px-4 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-white">Get in touch</a>
+      <a href="#contact" class="rounded-full bg-gradient-to-r from-accent to-tertiary px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-105">Get in touch</a>
     </nav>
   </header>
 
@@ -131,8 +190,14 @@
 
     <!-- ============ HERO ============ -->
     <section id="top" class="grid-backdrop relative overflow-hidden">
-      <div class="mx-auto max-w-5xl px-6 pb-24 pt-20 md:pb-32 md:pt-28">
-        <p class="hero-rise mb-5 text-sm font-medium uppercase tracking-[0.2em] text-accent" data-delay="1">
+      <!-- decorative MD3 colour blobs -->
+      <div class="blob blob-primary blob-float -left-24 -top-24 h-80 w-80" aria-hidden="true"></div>
+      <div class="blob blob-tertiary blob-float right-[-6rem] top-24 h-72 w-72" style="animation-delay:-6s" aria-hidden="true"></div>
+      <div class="blob blob-secondary blob-float left-1/3 bottom-[-5rem] h-64 w-64 opacity-40" style="animation-delay:-3s" aria-hidden="true"></div>
+
+      <div class="relative z-10 mx-auto max-w-5xl px-6 pb-24 pt-20 md:pb-32 md:pt-28">
+        <p class="hero-rise mb-5 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-white/70 px-4 py-1.5 text-sm font-medium uppercase tracking-[0.15em] text-accent shadow-sm backdrop-blur" data-delay="1">
+          <span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span>
           Physician · Virologist · Public Health Researcher
         </p>
         <h1 class="hero-rise max-w-3xl text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl md:text-6xl" data-delay="2">
@@ -164,7 +229,7 @@
     </section>
 
     <!-- ============ ABOUT ============ -->
-    <section id="about" class="border-t border-slate-100 bg-slate-50/50">
+    <section id="about" class="border-t border-slate-100 bg-accent-soft/40">
       <div class="mx-auto max-w-5xl px-6 py-20 md:py-28">
         <div class="grid gap-12 md:grid-cols-[0.8fr_1.2fr]">
           <div class="reveal">
@@ -256,7 +321,7 @@
     </section>
 
     <!-- ============ FEATURED RESEARCH & VISUALIZATION ============ -->
-    <section id="research" class="border-t border-slate-100 bg-slate-50/50">
+    <section id="research" class="border-t border-slate-100 bg-tertiary-soft/40">
       <div class="mx-auto max-w-5xl px-6 py-20 md:py-28">
         <div class="reveal max-w-2xl">
           <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Featured Research</h2>
@@ -406,7 +471,7 @@
     </section>
 
     <!-- ============ TECHNICAL PORTFOLIO ============ -->
-    <section id="portfolio" class="border-t border-slate-100 bg-slate-50/50">
+    <section id="portfolio" class="border-t border-slate-100 bg-accent-soft/40">
       <div class="mx-auto max-w-5xl px-6 py-20 md:py-28">
         <div class="reveal max-w-2xl">
           <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Technical Portfolio</h2>
@@ -431,7 +496,7 @@
                 loading="lazy"
                 onerror="(function(el){var f=(el.getAttribute('data-fallbacks')||'').split(',').filter(Boolean);if(f.length){el.src=f.shift();el.setAttribute('data-fallbacks',f.join(','));}else{el.style.display='none';document.getElementById('gis-map-fallback').style.display='flex';}})(this);"
               />
-              <div id="gis-map-fallback" class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <div id="gis-map-fallback" style="display:none;" class="absolute inset-0 flex-col items-center justify-center gap-3 bg-slate-100 p-6 text-center">
                 <svg class="h-10 w-10 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75 3.75 4.5v12.75L9 19.5m0-12.75L15 4.5m-6 2.25v12.75m6-15L20.25 4.5v12.75L15 19.5m0-15v15m0 0-6-2.25" />
                 </svg>
@@ -554,7 +619,7 @@
     </section>
 
     <!-- ============ TRAINING, WORKSHOPS & INTERNSHIPS ============ -->
-    <section id="training" class="border-t border-slate-100 bg-slate-50/50">
+    <section id="training" class="border-t border-slate-100 bg-tertiary-soft/40">
       <div class="mx-auto max-w-5xl px-6 py-20 md:py-28">
         <div class="reveal max-w-2xl">
           <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Training, Workshops &amp; Internships</h2>
@@ -649,57 +714,104 @@
       </div>
     </section>
 
+    <!-- ============ DOWNLOAD CV ============ -->
+    <section id="cv" class="border-t border-slate-100">
+      <div class="mx-auto max-w-5xl px-6 py-16 md:py-20">
+        <div class="reveal lift relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent-deep via-accent to-tertiary p-8 shadow-md3-lg md:p-12">
+          <!-- decorative blobs inside the card -->
+          <div class="blob blob-tertiary right-[-4rem] top-[-4rem] h-52 w-52 opacity-40" aria-hidden="true"></div>
+          <div class="blob blob-secondary left-1/4 bottom-[-5rem] h-48 w-48 opacity-30" aria-hidden="true"></div>
+
+          <div class="relative z-10 flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+            <div class="max-w-xl">
+              <p class="text-sm font-medium uppercase tracking-[0.2em] text-white/70">Curriculum Vitae</p>
+              <h2 class="mt-2 text-3xl font-semibold tracking-tight text-white">Download my full CV</h2>
+              <p class="mt-3 leading-relaxed text-white/80">
+                The complete record — education, publications, professional experience, training,
+                honors, and technical skills — in a single PDF.
+              </p>
+            </div>
+            <a href="CV-MAB.pdf" download
+               class="group inline-flex items-center gap-3 rounded-full bg-white px-7 py-4 text-base font-semibold text-accent shadow-lg transition-all hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-accent">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+              </svg>
+              <span>Download CV<span class="ml-1.5 font-normal text-accent/60">(PDF)</span></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ MEMBERSHIPS & LANGUAGES ============ -->
-    <section id="affiliations" class="border-t border-slate-100 bg-slate-50/50">
+    <section id="affiliations" class="border-t border-slate-100 bg-accent-soft/40">
       <div class="mx-auto max-w-5xl px-6 py-20 md:py-28">
-        <div class="grid gap-12 md:grid-cols-2">
+        <div class="space-y-8">
 
           <!-- Memberships -->
-          <div class="reveal">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Membership &amp; Registrations</h2>
-            <p class="mt-3 text-2xl font-semibold tracking-tight text-ink">Professional affiliations</p>
-            <ul class="mt-6 space-y-4">
-              <li class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
-                <span class="text-sm font-medium text-ink">Bangladesh Medical &amp; Dental Council (BMDC)</span>
-                <span class="whitespace-nowrap text-sm text-muted">Registered Physician · A-79860</span>
-              </li>
-              <li class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
-                <span class="text-sm font-medium text-ink">Society for Medical Virologists, Bangladesh</span>
-                <span class="whitespace-nowrap text-sm text-muted">General Member</span>
-              </li>
-              <li class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
-                <span class="text-sm font-medium text-ink">American Society for Microbiology (ASM)</span>
-                <span class="whitespace-nowrap text-sm text-muted">Global Outreach — Contributing Member</span>
-              </li>
-              <li class="flex items-start justify-between gap-4 pb-1">
-                <span class="text-sm font-medium text-ink">American Society for Virology (ASV)</span>
-                <span class="whitespace-nowrap text-sm text-muted">Associate Member</span>
-              </li>
-            </ul>
+          <div class="reveal lift rounded-3xl border border-accent/10 bg-white p-7 shadow-md3 md:p-9">
+            <div class="flex items-center gap-4">
+              <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4m5.6 1.6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </span>
+              <div>
+                <h2 class="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Membership &amp; Registrations</h2>
+                <p class="mt-0.5 text-xl font-semibold tracking-tight text-ink">Professional affiliations</p>
+              </div>
+            </div>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+              <div class="rounded-2xl bg-accent-soft/60 p-5">
+                <p class="text-sm font-semibold text-ink">Bangladesh Medical &amp; Dental Council (BMDC)</p>
+                <span class="mt-2 inline-block rounded-full bg-white px-3 py-1 text-xs font-medium text-accent shadow-sm">Registered Physician · A-79860</span>
+              </div>
+              <div class="rounded-2xl bg-accent-soft/60 p-5">
+                <p class="text-sm font-semibold text-ink">Society for Medical Virologists, Bangladesh</p>
+                <span class="mt-2 inline-block rounded-full bg-white px-3 py-1 text-xs font-medium text-accent shadow-sm">General Member</span>
+              </div>
+              <div class="rounded-2xl bg-accent-soft/60 p-5">
+                <p class="text-sm font-semibold text-ink">American Society for Microbiology (ASM)</p>
+                <span class="mt-2 inline-block rounded-full bg-white px-3 py-1 text-xs font-medium text-accent shadow-sm">Global Outreach — Contributing Member</span>
+              </div>
+              <div class="rounded-2xl bg-accent-soft/60 p-5">
+                <p class="text-sm font-semibold text-ink">American Society for Virology (ASV)</p>
+                <span class="mt-2 inline-block rounded-full bg-white px-3 py-1 text-xs font-medium text-accent shadow-sm">Associate Member</span>
+              </div>
+            </div>
           </div>
 
           <!-- Languages -->
-          <div class="reveal" data-delay="1">
-            <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Languages</h2>
-            <p class="mt-3 text-2xl font-semibold tracking-tight text-ink">Communication</p>
-            <ul class="mt-6 space-y-4">
-              <li class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
-                <span class="text-sm font-medium text-ink">Bangla</span>
-                <span class="whitespace-nowrap text-sm text-muted">Native proficiency</span>
-              </li>
-              <li class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
-                <span class="text-sm font-medium text-ink">English</span>
-                <span class="text-right text-sm text-muted">Professional · IELTS 8 (L 8.5, R 8.5, W 7, S 7)</span>
-              </li>
-              <li class="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
-                <span class="text-sm font-medium text-ink">Hindi</span>
-                <span class="whitespace-nowrap text-sm text-muted">Conversational proficiency</span>
-              </li>
-              <li class="flex items-start justify-between gap-4 pb-1">
-                <span class="text-sm font-medium text-ink">Spanish</span>
-                <span class="whitespace-nowrap text-sm text-muted">Basic (CEFR A1)</span>
-              </li>
-            </ul>
+          <div class="reveal lift rounded-3xl border border-tertiary/10 bg-white p-7 shadow-md3 md:p-9" data-delay="1">
+            <div class="flex items-center gap-4">
+              <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-tertiary-soft text-tertiary">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m3 15 4-9 4 9m-1.8-4h-4.4M4.5 13a11 11 0 0 0 6.5-8" />
+                </svg>
+              </span>
+              <div>
+                <h2 class="text-xs font-semibold uppercase tracking-[0.2em] text-tertiary">Languages</h2>
+                <p class="mt-0.5 text-xl font-semibold tracking-tight text-ink">Communication</p>
+              </div>
+            </div>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div class="rounded-2xl bg-tertiary-soft/60 p-5">
+                <p class="text-sm font-semibold text-ink">Bangla</p>
+                <p class="mt-1 text-xs text-muted">Native proficiency</p>
+              </div>
+              <div class="rounded-2xl bg-tertiary-soft/60 p-5">
+                <p class="text-sm font-semibold text-ink">English</p>
+                <p class="mt-1 text-xs text-muted">Professional · IELTS 8 (L 8.5, R 8.5, W 7, S 7)</p>
+              </div>
+              <div class="rounded-2xl bg-tertiary-soft/60 p-5">
+                <p class="text-sm font-semibold text-ink">Hindi</p>
+                <p class="mt-1 text-xs text-muted">Conversational proficiency</p>
+              </div>
+              <div class="rounded-2xl bg-tertiary-soft/60 p-5">
+                <p class="text-sm font-semibold text-ink">Spanish</p>
+                <p class="mt-1 text-xs text-muted">Basic (CEFR A1)</p>
+              </div>
+            </div>
           </div>
 
         </div>
