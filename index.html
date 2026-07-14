@@ -450,6 +450,33 @@
             and rigorous infection-prevention and contact precautions in care settings.
           </p>
         </div>
+
+        <!-- National Nipah Guideline contribution -->
+        <div class="reveal lift mt-6 rounded-3xl border border-secondary/10 bg-white p-6 shadow-md3 sm:p-9" data-delay="2">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary-soft text-secondary">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75A2.25 2.25 0 0 0 9.75 4.5H4.5v13.5h5.25A2.25 2.25 0 0 1 12 20.25m0-13.5A2.25 2.25 0 0 1 14.25 4.5h5.25v13.5h-5.25A2.25 2.25 0 0 0 12 20.25m0-13.5v13.5"/></svg>
+              </span>
+              <h3 class="text-lg font-semibold text-ink">National Nipah Guideline (3rd edition)</h3>
+            </div>
+            <span class="w-fit whitespace-nowrap rounded-full bg-secondary-soft px-3 py-1 text-xs font-medium text-secondary">Core Committee Member</span>
+          </div>
+          <p class="mt-4 leading-relaxed text-muted">
+            Served as a <span class="font-medium text-ink">member of the core committee</span> for Bangladesh's
+            National Guideline on Nipah Virus Infection (3rd edition), drafting two chapters:
+          </p>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-2xl bg-secondary-soft/60 p-5">
+              <p class="text-xs font-semibold uppercase tracking-wider text-secondary">Chapter 5</p>
+              <p class="mt-1 text-sm font-semibold text-ink">Laboratory Diagnosis of Nipah Virus Infection</p>
+            </div>
+            <div class="rounded-2xl bg-secondary-soft/60 p-5">
+              <p class="text-xs font-semibold uppercase tracking-wider text-secondary">Chapter 7</p>
+              <p class="mt-1 text-sm font-semibold text-ink">Prevention and Control of Nipah Virus Infection</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -553,10 +580,11 @@
             </span>
             <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Technical Portfolio</h2>
           </div>
-          <p class="mt-4 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">Computation, scripting &amp; spatial analysis</p>
+          <p class="mt-4 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">Computation, scripting, genomics &amp; visualisation</p>
           <p class="mt-4 text-base leading-relaxed text-muted sm:text-lg">
-            Bench work backed by reproducible code — shell pipelines for sequence analysis, R for statistics, and
-            QGIS for geospatial epidemiology.
+            Bench work backed by reproducible code — shell pipelines for sequence analysis, R for statistics,
+            QGIS for geospatial epidemiology, genome sequencing deposited to public databases, and custom
+            visual analytics for outbreak data.
           </p>
         </div>
 
@@ -609,6 +637,96 @@
               </a>
             </figcaption>
           </figure>
+        </div>
+
+        <!-- Data visualisation & analysis -->
+        <h3 class="reveal mt-10 text-xs font-semibold uppercase tracking-[0.18em] text-accent sm:mt-12" data-delay="1">Data visualisation &amp; analysis</h3>
+        <div class="reveal mt-4 grid gap-5 sm:gap-6 md:grid-cols-3" data-delay="1">
+
+          <!-- Timeline bubble plot -->
+          <figure class="lift overflow-hidden rounded-3xl border border-accent/10 bg-white shadow-md3">
+            <div class="relative aspect-[4/3] w-full bg-slate-100">
+              <img src="timeline_bubble_plot.png" alt="Timeline bubble plot of outbreak events over time" class="h-full w-full object-contain" loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div style="display:none;" class="absolute inset-0 flex-col items-center justify-center gap-2 bg-slate-100 p-5 text-center">
+                <svg class="h-9 w-9 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M8 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm7-4a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm4 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/></svg>
+                <p class="text-sm font-medium text-ink">Timeline bubble plot</p>
+                <p class="max-w-xs text-xs text-muted">Add <code class="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px]">timeline_bubble_plot.png</code> to this folder to load.</p>
+              </div>
+            </div>
+            <figcaption class="flex items-center justify-between gap-2 border-t border-slate-100 px-5 py-3">
+              <span class="text-sm font-medium text-ink">Outbreak timeline (bubble plot)</span>
+              <span class="text-xs text-muted">R / ggplot2</span>
+            </figcaption>
+          </figure>
+
+          <!-- Sankey diagram -->
+          <figure class="lift overflow-hidden rounded-3xl border border-tertiary/10 bg-white shadow-md3">
+            <div class="relative aspect-[4/3] w-full bg-slate-100">
+              <img src="sankey_diagram.png" alt="Sankey diagram of transmission or data flow" class="h-full w-full object-contain" loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div style="display:none;" class="absolute inset-0 flex-col items-center justify-center gap-2 bg-slate-100 p-5 text-center">
+                <svg class="h-9 w-9 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5v14M4 8h6a4 4 0 0 1 4 4v0a4 4 0 0 0 4 4h2M4 15h6a4 4 0 0 0 4-4v0a4 4 0 0 1 4-4h2"/></svg>
+                <p class="text-sm font-medium text-ink">Sankey diagram</p>
+                <p class="max-w-xs text-xs text-muted">Add <code class="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px]">sankey_diagram.png</code> to this folder to load.</p>
+              </div>
+            </div>
+            <figcaption class="flex items-center justify-between gap-2 border-t border-slate-100 px-5 py-3">
+              <span class="text-sm font-medium text-ink">Flow &amp; transmission (Sankey)</span>
+              <span class="text-xs text-muted">R</span>
+            </figcaption>
+          </figure>
+
+          <!-- Nipah virus transmission pathway -->
+          <figure class="lift overflow-hidden rounded-3xl border border-secondary/10 bg-white shadow-md3">
+            <div class="relative aspect-[4/3] w-full bg-slate-100">
+              <img src="nipah_virus_transmission_pathway.png" alt="Nipah virus transmission pathway diagram" class="h-full w-full object-contain" loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div style="display:none;" class="absolute inset-0 flex-col items-center justify-center gap-2 bg-slate-100 p-5 text-center">
+                <svg class="h-9 w-9 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c-2.5-2-3.5-5-3.5-9S9.5 5 12 3M3.5 9h17M3.5 15h17"/></svg>
+                <p class="text-sm font-medium text-ink">Transmission pathway</p>
+                <p class="max-w-xs text-xs text-muted">Add <code class="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px]">nipah_virus_transmission_pathway.png</code> to this folder to load.</p>
+              </div>
+            </div>
+            <figcaption class="flex items-center justify-between gap-2 border-t border-slate-100 px-5 py-3">
+              <span class="text-sm font-medium text-ink">Nipah virus transmission pathway</span>
+              <span class="text-xs text-muted">Illustrator</span>
+            </figcaption>
+          </figure>
+
+        </div>
+
+        <!-- Genome sequencing contributions -->
+        <div class="reveal lift mt-8 rounded-3xl border border-accent/10 bg-white p-6 shadow-md3 sm:p-9" data-delay="2">
+          <div class="flex items-center gap-3">
+            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 3c0 4 8 6 8 10s-4 5-4 5m0-15s-4 1-4 5 8 6 8 10M6 5h6M12 19h6M7 9h4m2 6h4"/></svg>
+            </span>
+            <h3 class="text-lg font-semibold text-ink">Genome sequencing contributions</h3>
+          </div>
+          <p class="mt-4 leading-relaxed text-muted">
+            I have contributed viral genome sequences from Bangladesh to <span class="font-medium text-ink">Pathoplexus</span>,
+            an open, community-governed database for pathogen genomic data — supporting genomic surveillance and
+            outbreak response for two priority pathogens.
+          </p>
+          <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            <a href="https://pathoplexus.org/dengue/search?geoLocCountry=Bangladesh&selectedSeq=PP_0073GXA.1" target="_blank" rel="noopener noreferrer"
+               class="group flex items-center justify-between gap-3 rounded-2xl bg-accent-soft/60 p-5 transition-colors hover:bg-accent-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+              <span>
+                <span class="block text-sm font-semibold text-ink group-hover:text-accent">Dengue virus — Bangladesh</span>
+                <span class="mt-1 block text-xs text-muted">Genome sequence on Pathoplexus (PP_0073GXA.1)</span>
+              </span>
+              <span aria-hidden="true" class="shrink-0 text-accent transition-transform group-hover:translate-x-0.5">↗</span>
+            </a>
+            <a href="https://pathoplexus.org/measles/search?geoLocCountry=Bangladesh&selectedSeq=PP_0072467.3" target="_blank" rel="noopener noreferrer"
+               class="group flex items-center justify-between gap-3 rounded-2xl bg-accent-soft/60 p-5 transition-colors hover:bg-accent-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+              <span>
+                <span class="block text-sm font-semibold text-ink group-hover:text-accent">Measles virus — Bangladesh</span>
+                <span class="mt-1 block text-xs text-muted">Genome sequence on Pathoplexus (PP_0072467.3)</span>
+              </span>
+              <span aria-hidden="true" class="shrink-0 text-accent transition-transform group-hover:translate-x-0.5">↗</span>
+            </a>
+          </div>
         </div>
 
         <!-- skills full breakdown -->
