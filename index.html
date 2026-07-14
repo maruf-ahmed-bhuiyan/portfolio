@@ -59,13 +59,13 @@
     /* Scroll-reveal base state */
     .reveal {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+      transform: translateY(30px) scale(0.985);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
       will-change: opacity, transform;
     }
     .reveal.is-visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
     /* Staggered children */
     .reveal[data-delay="1"] { transition-delay: 0.08s; }
@@ -149,12 +149,72 @@
       html { scroll-behavior: auto; }
     }
 
+    /* ---------- Intro preloader ---------- */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      background: #ffffff;
+      transition: opacity 0.7s var(--ease-out), visibility 0.7s var(--ease-out);
+    }
+    #preloader.is-done { opacity: 0; visibility: hidden; }
+    .pre-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #3b5b8c;
+      opacity: 0;
+      animation: preFade 0.6s var(--ease-out) 0.05s forwards;
+    }
+    .pre-count {
+      font-size: clamp(3rem, 12vw, 6rem);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #1a1d21;
+      font-variant-numeric: tabular-nums;
+    }
+    .pre-count sup { font-size: 0.3em; color: #3f7d6f; top: -1.4em; }
+    .pre-track { position: relative; height: 3px; width: min(240px, 60vw); overflow: hidden; border-radius: 9999px; background: #e8eef7; }
+    .pre-bar { position: absolute; inset: 0 100% 0 0; background: linear-gradient(90deg, #3b5b8c, #3f7d6f); border-radius: 9999px; }
+    @keyframes preFade { to { opacity: 1; } }
+    html.preloading, body.preloading { overflow: hidden !important; height: 100%; }
+
+    /* ---------- Scroll progress bar ---------- */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      background: linear-gradient(90deg, #3b5b8c, #3f7d6f);
+      z-index: 50;
+      pointer-events: none;
+    }
+
     /* Prevent horizontal scroll on small screens */
     body { overflow-x: hidden; }
   </style>
 </head>
 
-<body class="bg-white text-ink font-sans antialiased selection:bg-accent/20">
+<body class="bg-white text-ink font-sans antialiased selection:bg-accent/20 preloading">
+
+  <!-- ============ INTRO PRELOADER ============ -->
+  <div id="preloader" role="status" aria-label="Loading">
+    <span class="pre-name">Maruf Ahmed Bhuiyan</span>
+    <div class="pre-count"><span id="pre-count-num">0</span><sup>%</sup></div>
+    <div class="pre-track"><div class="pre-bar" id="pre-bar"></div></div>
+  </div>
+
+  <!-- Scroll progress bar -->
+  <div id="scroll-progress" aria-hidden="true"></div>
 
   <!-- Skip link for accessibility -->
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
@@ -1121,6 +1181,34 @@
       /* ---- Footer year ---- */
       document.getElementById('year').textContent = new Date().getFullYear();
 
+      /* ---- Intro preloader ---- */
+      (function () {
+        const pre = document.getElementById('preloader');
+        const numEl = document.getElementById('pre-count-num');
+        const barEl = document.getElementById('pre-bar');
+        function finish() {
+          document.documentElement.classList.remove('preloading');
+          document.body.classList.remove('preloading');
+          if (pre) pre.classList.add('is-done');
+          if (pre) setTimeout(function () { pre.remove(); }, 800);
+        }
+        if (!pre) { document.documentElement.classList.remove('preloading'); document.body.classList.remove('preloading'); return; }
+        if (prefersReduced) { if (numEl) numEl.textContent = '100'; if (barEl) barEl.style.right = '0%'; setTimeout(finish, 250); return; }
+        let n = 0;
+        const step = function () {
+          // ease toward 100 with a little randomness for a natural count
+          n += Math.max(1, Math.round((100 - n) * 0.08) + (Math.random() < 0.3 ? 1 : 0));
+          if (n >= 100) n = 100;
+          if (numEl) numEl.textContent = String(n);
+          if (barEl) barEl.style.right = (100 - n) + '%';
+          if (n < 100) { setTimeout(step, 22 + Math.random() * 26); }
+          else { setTimeout(finish, 350); }
+        };
+        // safety fallback: never trap the page
+        setTimeout(finish, 4000);
+        setTimeout(step, 150);
+      })();
+
       /* ---- Mobile menu toggle ---- */
       const menuBtn = document.getElementById('menu-btn');
       const mobileMenu = document.getElementById('mobile-menu');
@@ -1223,6 +1311,23 @@
           }, { threshold: 0.35 });
           termObs.observe(codeEl);
         }
+      }
+
+      /* ---- Scroll progress bar (native scroll, rAF-throttled) ---- */
+      const progressEl = document.getElementById('scroll-progress');
+      if (progressEl) {
+        let ticking = false;
+        function updateProgress() {
+          const h = document.documentElement;
+          const max = h.scrollHeight - h.clientHeight;
+          const p = max > 0 ? (h.scrollTop || window.pageYOffset) / max : 0;
+          progressEl.style.transform = 'scaleX(' + Math.min(1, Math.max(0, p)) + ')';
+          ticking = false;
+        }
+        window.addEventListener('scroll', function () {
+          if (!ticking) { ticking = true; requestAnimationFrame(updateProgress); }
+        }, { passive: true });
+        updateProgress();
       }
     })();
   </script>
