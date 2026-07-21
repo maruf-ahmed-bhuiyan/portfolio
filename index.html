@@ -452,7 +452,10 @@ html{ scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body{
   margin:0; background: var(--color-bg); color: var(--color-fg);
   font-family: var(--font-sans); font-size: var(--fs-body); line-height: 1.6;
-  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  /* clip prevents horizontal overflow WITHOUT making body a scroll container,
+     which is what can drop Android off the compositor fast path */
+  overflow-x: hidden; overflow-x: clip;
 }
 h1,h2,h3,h4{ margin:0; line-height:1.15; letter-spacing:-0.021em; font-weight:600; }
 h1{ letter-spacing:-0.032em; line-height:1.06; }
@@ -737,7 +740,7 @@ a{ color: inherit; }
    makes scrolling stutter on mid-range phones. Touch devices get solid
    surfaces instead - visually near-identical, no per-frame blur.
    ═══════════════════════════════════════════════════════════════ */
-@media (hover: none){
+@media (hover: none), (pointer: coarse){
   .topbar, .fig__index, .fig__zoom{
     backdrop-filter:none; -webkit-backdrop-filter:none;
   }
@@ -752,6 +755,18 @@ a{ color: inherit; }
 }
 /* give the looping status dot its own layer so it can't dirty the hero */
 .pulse::before{ will-change: transform, opacity; }
+
+/* On phones ~100 elements would otherwise animate translateY at once as
+   sections scroll in. Opacity alone is compositor-only and far cheaper. */
+@media (hover: none), (pointer: coarse){
+  .rv{ transform:none; transition: opacity 320ms var(--ease); }
+  .rv.in{ transform:none; }
+  .stag > *{ transform:none; transition: opacity 260ms var(--ease); }
+  .stag > *.in{ transform:none; }
+}
+
+/* scope the typewriter's layout work to the code block itself */
+.terminal pre{ contain: content; }
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{
@@ -2449,6 +2464,7 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
 (function(){
   'use strict';
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var coarsePointer = matchMedia('(pointer: coarse)').matches;
   var hasIO = 'IntersectionObserver' in window;
   var $ = function(s, r){ return (r||document).querySelector(s); };
   var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
@@ -2630,16 +2646,23 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
     'done < "$1" | tee -a peptide_parameters.tsv'
   ];
   var full = lines.join('\n');
+  /* The old version wrote textContent 387 times on a setTimeout(13ms) chain -
+     ~77 forced layouts per second for 5s, firing exactly as the portfolio
+     scrolled into view. Touch devices now get the finished text instantly;
+     desktop advances 2 chars per animation frame, so writes are capped at one
+     per frame and batched by the compositor. */
   function type(){
     if (!code) return;
-    if (reduced){ code.textContent = full; return; }
+    if (reduced || coarsePointer){ code.textContent = full; return; }
     code.classList.add('caret');
     var i = 0;
-    (function tick(){
-      code.textContent = full.slice(0, i); i++;
-      if (i <= full.length) setTimeout(tick, full.charAt(i-1) === '\n' ? 78 : 13);
+    function frame(){
+      i += 2;
+      code.textContent = full.slice(0, i);
+      if (i < full.length) requestAnimationFrame(frame);
       else setTimeout(function(){ code.classList.remove('caret'); }, 1600);
-    })();
+    }
+    requestAnimationFrame(frame);
   }
   if (code){
     if (!hasIO) type();
