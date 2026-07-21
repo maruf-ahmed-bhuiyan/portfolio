@@ -746,13 +746,28 @@ a{ color: inherit; }
   }
   .topbar{ background: var(--color-bg); }
   .fig__index, .fig__zoom{ background: var(--color-bg); }
-  /* the radial mask over a repeating grid is expensive to rasterise; a linear
-     fade reads the same at phone width and costs far less */
-  .hero__bg{
-    -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 92%);
-    mask-image: linear-gradient(to bottom, black 30%, transparent 92%);
+  /* Any mask - radial or linear - forces the whole hero band through an extra
+     compositing pass on every frame it moves, which is why slow scrolling
+     through the hero stuttered while fast scrolling hid it. The grid is purely
+     decorative and barely legible at phone width, so drop it outright. */
+  .hero__bg{ display:none; }
+
+  /* An infinite animation keeps a promoted layer alive and the compositor
+     working every frame, even at rest. The dot stays; the pulse stops. */
+  .pulse::before{ animation:none; will-change:auto; }
+
+  /* 60px-blur shadows on rounded, overflow:hidden boxes (the profile panel is
+     all three) are expensive to rasterise as they scroll. Theme-neutral,
+     tighter equivalents cost a fraction to paint. */
+  :root{
+    --shadow-md: 0 4px 12px -6px rgba(0,0,0,0.22);
+    --shadow-lg: 0 8px 20px -10px rgba(0,0,0,0.28);
   }
 }
+
+/* Scope layout and raster to each section, so work inside one section cannot
+   force the browser to re-evaluate the whole 10-section page. */
+.section{ contain: layout paint; }
 /* give the looping status dot its own layer so it can't dirty the hero */
 .pulse::before{ will-change: transform, opacity; }
 
