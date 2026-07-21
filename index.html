@@ -506,7 +506,10 @@ a{ color: inherit; }
   display:flex; align-items:center; justify-content:space-between; gap: var(--s-4);
   min-height:64px; padding-block: var(--s-3);
 }
-.brand{ display:flex; align-items:center; gap:var(--s-3); text-decoration:none; min-height:44px; flex:0 0 auto; }
+/* was flex:0 0 auto, so at ~450px the brand + actions needed 448px in a 405px
+   bar and pushed the menu button off-screen. Now it yields, and the nav CTA
+   (duplicated inside the menu) is hidden until there is room for it. */
+.brand{ display:flex; align-items:center; gap:var(--s-3); text-decoration:none; min-height:44px; flex:0 1 auto; min-width:0; }
 .brand__mark{
   width:38px; height:38px; flex:none; display:grid; place-items:center;
   border-radius: var(--radius-md); background: var(--color-inverse-bg);
@@ -515,7 +518,9 @@ a{ color: inherit; }
 }
 .brand:hover .brand__mark{ background: var(--color-accent); color: var(--color-accent-fg); }
 /* chrome (nav, buttons) sits one step below body - it's UI, not reading matter */
-.brand__name{ display:block; font-size: var(--fs-small); font-weight:600; letter-spacing:-0.02em; white-space:nowrap; }
+/* min-width:0 is required for a flex item to shrink below its content width,
+   which is what lets the ellipsis engage instead of overflowing the bar */
+.brand__name{ display:block; min-width:0; font-size: var(--fs-small); font-weight:600; letter-spacing:-0.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
 .navlist{ display:none; align-items:center; gap: var(--s-5); flex:1 1 auto; justify-content:center; }
 .navlist a{
@@ -533,7 +538,9 @@ a{ color: inherit; }
 .navlist a:hover::after, .navlist a[aria-current="true"]::after{ transform: scaleX(1); }
 .navlist a[aria-current="true"]{ color: var(--color-fg); }
 
-.nav-actions{ display:flex; align-items:center; gap: var(--s-2); }
+.nav-actions{ display:flex; align-items:center; gap: var(--s-2); flex:none; }
+.nav-cta{ display:none; }
+@media (min-width: 680px){ .nav-cta{ display:inline-flex; } }
 
 .icon-btn{
   width:44px; height:44px; flex:none; display:grid; place-items:center;
@@ -722,6 +729,30 @@ a{ color: inherit; }
 .stag > *{ opacity:0; transform: translateY(14px); transition: opacity 450ms var(--ease), transform 450ms var(--ease); }
 .stag > *.in{ opacity:1; transform:none; }
 
+/* ═══════════════════════════════════════════════════════════════
+   TOUCH-DEVICE COMPOSITING
+   Nine backdrop-filtered elements (sticky header + 4 figure badges +
+   4 zoom buttons) stay on screen while scrolling; each forces the GPU
+   to re-sample and blur what's behind it every frame, which is what
+   makes scrolling stutter on mid-range phones. Touch devices get solid
+   surfaces instead - visually near-identical, no per-frame blur.
+   ═══════════════════════════════════════════════════════════════ */
+@media (hover: none){
+  .topbar, .fig__index, .fig__zoom{
+    backdrop-filter:none; -webkit-backdrop-filter:none;
+  }
+  .topbar{ background: var(--color-bg); }
+  .fig__index, .fig__zoom{ background: var(--color-bg); }
+  /* the radial mask over a repeating grid is expensive to rasterise; a linear
+     fade reads the same at phone width and costs far less */
+  .hero__bg{
+    -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 92%);
+    mask-image: linear-gradient(to bottom, black 30%, transparent 92%);
+  }
+}
+/* give the looping status dot its own layer so it can't dirty the hero */
+.pulse::before{ will-change: transform, opacity; }
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{
     animation-duration:0.01ms !important; animation-iteration-count:1 !important;
@@ -866,14 +897,20 @@ a.inline:hover{ text-decoration-color: var(--color-accent); }
 .hero__lede{ margin-top: var(--s-5); color: var(--color-fg-muted); max-width: 62ch; font-size: var(--fs-body); }
 .hero__cta{ margin-top: var(--s-6); display:flex; flex-wrap:wrap; gap: var(--s-3); }
 
+/* a wrapping flex row inside a fully-rounded pill collapsed into a blob on
+   narrow screens. Inline-block + an inline marker wraps as ordinary text; the
+   pill shape is only applied once the line is known to fit. */
 .status{
-  display:inline-flex; align-items:center; gap:var(--s-2); flex-wrap:wrap;
-  padding: 8px 16px; border-radius: var(--radius-full);
+  display:inline-block; max-width:100%;
+  padding: 8px 16px; border-radius: var(--radius-md); line-height:1.5;
   border:1px solid var(--accent-a26);
   background: var(--color-accent-subtle); color: var(--color-accent-hover);
-  font-size: var(--fs-micro); font-weight:600; letter-spacing:0.11em; text-transform:uppercase;
+  font-size: var(--fs-micro); font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
 }
-.pulse{ position:relative; width:7px; height:7px; flex:none; }
+@media (min-width: 620px){
+  .status{ border-radius: var(--radius-full); letter-spacing:0.11em; white-space:nowrap; }
+}
+.pulse{ position:relative; display:inline-block; vertical-align:middle; width:7px; height:7px; margin-right:8px; margin-top:-2px; }
 .pulse::before{ content:''; position:absolute; inset:0; border-radius:50%; background: var(--color-accent); animation: ping 2.4s cubic-bezier(0,0,0.2,1) infinite; }
 .pulse::after{ content:''; position:absolute; inset:0; border-radius:50%; background: var(--color-accent); }
 @keyframes ping{ 75%,100%{ transform: scale(2.4); opacity:0; } }
@@ -1183,6 +1220,8 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
 .cvband__inner{ position:relative; display:grid; gap: var(--s-6); padding: clamp(24px,3vw,44px); align-items:center; }
 @media (min-width: 900px){ .cvband__inner{ grid-template-columns: 1fr auto; gap: var(--s-8); } }
 .cvband h2{ font-size: var(--fs-h2); margin-top: var(--s-4); }
+.cvband__inner .btn{ width:100%; justify-content:center; }
+@media (min-width: 900px){ .cvband__inner .btn{ width:auto; justify-self:end; } }
 .cvband p{ margin-top: var(--s-4); color: var(--color-fg-inverse-mut); max-width: 52ch; }
 
 .footer{ background: var(--color-inverse-bg); color: var(--color-fg-inverse); position:relative; overflow:hidden; }
@@ -1243,7 +1282,7 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
       </button>
-      <a class="btn btn--primary" href="#contact">Get in touch</a>
+      <a class="btn btn--primary nav-cta" href="#contact">Get in touch</a>
       <button class="icon-btn menu-toggle" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu-panel">
         <svg id="i-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
         <svg id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true" style="display:none"><path stroke-linecap="round" d="M6 18 18 6M6 6l12 12"/></svg>
@@ -2457,7 +2496,7 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
   /* ---- Sticky header ---- */
   var topbar = $('#topbar');
   function onScrollBar(){ if (topbar) topbar.classList.toggle('stuck', window.scrollY > 8); }
-  addEventListener('scroll', onScrollBar, { passive:true }); onScrollBar();
+  onScrollBar(); /* driven from the single rAF loop below */
 
   /* ---- Mobile menu ---- */
   var menuBtn = $('#menu-btn'), panel = $('#menu-panel'), iOpen = $('#i-open'), iClose = $('#i-close');
@@ -2614,17 +2653,21 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
   }
 
   /* ---- Scroll progress ---- */
+  /* ONE passive, rAF-throttled scroll listener drives both the progress bar and
+     the sticky-header state. Previously the header handler ran unthrottled on
+     every scroll event, forcing a style recalc per event. */
   var bar = $('#progress'), ticking = false;
   function upd(){
-    var h = document.documentElement;
-    var max = h.scrollHeight - h.clientHeight;
-    bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, Math.max(0, h.scrollTop / max)) : 0) + ')';
+    if (bar){
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, Math.max(0, h.scrollTop / max)) : 0) + ')';
+    }
+    onScrollBar();
     ticking = false;
   }
-  if (bar){
-    addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(upd); } }, { passive:true });
-    upd();
-  }
+  addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(upd); } }, { passive:true });
+  upd();
 })();
 </script>
 </body>
