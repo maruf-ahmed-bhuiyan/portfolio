@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>Maruf Ahmed Bhuiyan - Pathogen Genomics &amp; Public Health</title>
-<meta name="description" content="Clinician-scientist in pathogen genomics and genomic epidemiology of pandemic-potential pathogens, bridging wet lab and computational biology at IEDCR." />
+<meta name="description" content="Researcher in pathogen genomics and genomic epidemiology of pandemic-potential pathogens, bridging wet lab and computational biology at IEDCR." />
 <link rel="canonical" href="https://marufahmedbhuiyan.com/" />
 <meta name="theme-color" content="#0b1b2e" media="(prefers-color-scheme: dark)" />
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 
 <meta property="og:type" content="profile" />
 <meta property="og:title" content="Maruf Ahmed Bhuiyan - Pathogen Genomics &amp; Public Health" />
-<meta property="og:description" content="Clinician-scientist working across pathogen genomics, genomic epidemiology and public health - pandemic-potential pathogens through a One Health lens. IEDCR, Dhaka." />
+<meta property="og:description" content="Researcher working across pathogen genomics, genomic epidemiology and public health - pandemic-potential pathogens through a One Health lens. IEDCR, Dhaka." />
 <meta property="og:image" content="og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -525,7 +525,7 @@ a{ color: inherit; }
    which is what lets the ellipsis engage instead of overflowing the bar */
 .brand__name{ display:block; min-width:0; font-size: var(--fs-small); font-weight:600; letter-spacing:-0.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-.navlist{ display:none; align-items:center; gap: var(--s-5); flex:1 1 auto; justify-content:center; }
+.navlist{ display:none; align-items:center; gap: var(--s-4); flex:1 1 auto; justify-content:center; }
 .navlist a{
   position:relative; text-decoration:none; font-size: var(--fs-small); font-weight:500; white-space:nowrap;
   color: var(--color-fg-muted); padding-block:6px;
@@ -599,7 +599,7 @@ a{ color: inherit; }
 .menu-panel__cta{ grid-column:1 / -1; display:grid; grid-template-columns:1fr 1fr; gap:var(--s-3); margin-top:var(--s-5); }
 .menu-panel__cta a{ border-bottom:0; justify-content:center; }
 
-@media (min-width: 1080px){
+@media (min-width: 1200px){
   .navlist{ display:flex; }
   .menu-toggle{ display:none; }
 }
@@ -1074,8 +1074,17 @@ a.inline:hover{ text-decoration-color: var(--color-accent); }
   display:flex; flex-direction:column; background: var(--color-bg);
   border:1px solid var(--color-border); border-radius: var(--radius-lg); overflow:hidden;
 }
-.lightbox__img{ flex:1; min-height:0; display:grid; place-items:center; background: var(--color-bg-sunken); padding: var(--s-5); }
-.lightbox__img img{ max-height:70vh; width:auto; object-fit:contain; }
+.lightbox__img{ position:relative; flex:1; min-height:0; display:grid; place-items:center; background: var(--color-bg-sunken); padding: var(--s-5); }
+.lightbox__img img{ max-height:70vh; width:auto; object-fit:contain; transition: opacity var(--dur) var(--ease); }
+/* While the full-resolution file loads, the thumbnail preview is shown dimmed with a corner spinner */
+.lightbox.is-loading .lightbox__img img{ opacity:0.55; }
+.lightbox.is-loading .lightbox__img::after{
+  content:''; position:absolute; right:16px; bottom:16px; z-index:1;
+  width:22px; height:22px; border-radius:50%;
+  border:2px solid var(--accent-a20); border-top-color: var(--color-accent);
+  animation: lb-spin 0.7s linear infinite;
+}
+@keyframes lb-spin{ to{ transform: rotate(360deg); } }
 .lightbox__bar{ display:flex; align-items:center; justify-content:space-between; gap: var(--s-4); padding: var(--s-4) var(--s-5); border-top:1px solid var(--color-border); }
 .lightbox__bar p{ font-size: var(--fs-body); font-weight:600; }
 .lightbox__bar span{ font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--color-fg-faint); }
@@ -1348,15 +1357,10 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
     <div class="shell hero__inner">
 
       <div>
-        <p class="status">
-          <span class="pulse" aria-hidden="true"></span>
-          Laboratory Research Officer · IEDCR, Dhaka
-        </p>
-
         <h1>Pathogen genomics for pandemic preparedness.</h1>
 
         <p class="hero__lede">
-          I am a clinician-scientist working at the intersection of <strong>pathogen genomics</strong>,
+          I am a researcher working at the intersection of <strong>pathogen genomics</strong>,
           <strong>genomic epidemiology</strong> and <strong>public health</strong> - combining wet-lab
           virology with computational biology and data science to strengthen surveillance of
           pandemic-potential pathogens through a One Health lens.
@@ -1434,7 +1438,7 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
 
       <div class="about-grid">
         <div class="rv">
-          <h2 style="font-size:var(--fs-h2)">A clinician-scientist with a laboratory core.</h2>
+          <h2 style="font-size:var(--fs-h2)">A public health reseacher with a laboratory core.</h2>
           <div class="about-note">
             <p>
               Training that moves between the ward, the bench and the surveillance system - and work that
@@ -1828,9 +1832,11 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
           <div class="fig__mediawrap">
             <span class="fig__index">FIG. 01</span>
             <div class="fig__media">
-              <img id="fig1-img" src="qgis-map.svg" data-fallbacks="qgis-map.png,qgis-map.jpg,qgis-map.jpeg"
+              <!-- Fast grid thumbnail; falls back to the full-res SVG if the thumb is absent. data-full = crisp source shown on Enlarge. -->
+              <img id="fig1-img" src="qgis-map-thumb.png" data-fallbacks="qgis-map.svg,qgis-map.png,qgis-map.jpg,qgis-map.jpeg"
+                   data-full="qgis-map.svg"
                    alt="Choropleth map of Bangladesh produced in QGIS, shading districts by outbreak activity level"
-                   width="1200" height="514" loading="lazy" decoding="async"
+                   width="1200" height="514" loading="lazy" decoding="async" fetchpriority="low"
                    data-lb-title="Geospatial outbreak mapping" data-lb-tool="QGIS" />
               <div class="fig__empty" id="fig1-empty">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75 3.75 4.5v12.75L9 19.5m0-12.75L15 4.5m-6 2.25v12.75m6-15L20.25 4.5v12.75L15 19.5m0-15v15m0 0-6-2.25"/></svg>
@@ -1868,9 +1874,10 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
           <div class="fig__mediawrap">
             <span class="fig__index">FIG. 02</span>
             <div class="fig__media">
-              <img id="fig2-img" src="timeline_bubble_plot.png"
+              <img id="fig2-img" src="timeline_bubble_plot-thumb.png" data-fallbacks="timeline_bubble_plot.png"
+                   data-full="timeline_bubble_plot.png"
                    alt="Bubble plot showing outbreak events across a time axis, bubble area scaled to case count"
-                   width="800" height="600" loading="lazy" decoding="async"
+                   width="800" height="600" loading="lazy" decoding="async" fetchpriority="low"
                    data-lb-title="Outbreak timeline - bubble plot" data-lb-tool="R / ggplot2" />
               <div class="fig__empty">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M8 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm7-4a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm4 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/></svg>
@@ -1907,9 +1914,10 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
           <div class="fig__mediawrap">
             <span class="fig__index">FIG. 03</span>
             <div class="fig__media">
-              <img id="fig3-img" src="sankey_diagram.png"
+              <img id="fig3-img" src="sankey_diagram-thumb.png" data-fallbacks="sankey_diagram.png"
+                   data-full="sankey_diagram.png"
                    alt="Sankey diagram showing proportional flow between transmission stages"
-                   width="800" height="600" loading="lazy" decoding="async"
+                   width="800" height="600" loading="lazy" decoding="async" fetchpriority="low"
                    data-lb-title="Flow &amp; transmission - Sankey" data-lb-tool="R" />
               <div class="fig__empty">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5v14M4 8h6a4 4 0 0 1 4 4v0a4 4 0 0 0 4 4h2M4 15h6a4 4 0 0 0 4-4v0a4 4 0 0 1 4-4h2"/></svg>
@@ -1946,9 +1954,10 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
           <div class="fig__mediawrap">
             <span class="fig__index">FIG. 04</span>
             <div class="fig__media">
-              <img id="fig4-img" src="nipah_virus_transmission_pathway.png"
+              <img id="fig4-img" src="nipah_virus_transmission_pathway-thumb.png" data-fallbacks="nipah_virus_transmission_pathway.png"
+                   data-full="nipah_virus_transmission_pathway.png"
                    alt="Vector diagram of the Nipah virus transmission pathway from fruit bat reservoir through date-palm sap to human and person-to-person spread"
-                   width="1200" height="514" loading="lazy" decoding="async"
+                   width="1200" height="514" loading="lazy" decoding="async" fetchpriority="low"
                    data-lb-title="Nipah virus transmission pathway" data-lb-tool="Adobe Illustrator" />
               <div class="fig__empty">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c-2.5-2-3.5-5-3.5-9S9.5 5 12 3M3.5 9h17M3.5 15h17"/></svg>
@@ -2542,7 +2551,7 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
   if (menuBtn && panel){
     menuBtn.addEventListener('click', function(){ setMenu(panel.dataset.open !== 'true'); });
     $$('[data-mlink]').forEach(function(a){ a.addEventListener('click', function(){ setMenu(false); }); });
-    var wide = matchMedia('(min-width: 1080px)');
+    var wide = matchMedia('(min-width: 1200px)');
     if (wide.addEventListener) wide.addEventListener('change', function(e){ if (e.matches) setMenu(false); });
   }
 
@@ -2611,13 +2620,38 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
   var lb = $('#lightbox'), lbImg = $('#lb-img'), lbTitle = $('#lb-title'), lbTool = $('#lb-tool'), lbClose = $('#lb-close');
   var lastFocus = null;
 
+  /* The grid image is a lightweight thumbnail; the lightbox shows the full-res
+     source (data-full). Show the already-loaded thumbnail instantly, then swap
+     to the full-res file once it has decoded - so Enlarge feels immediate. */
+  var preloaded = {};
+  function preloadFull(img){
+    if (!img) return;
+    var full = img.getAttribute('data-full');
+    var current = img.currentSrc || img.src;
+    if (!full || full === current || preloaded[full]) return;
+    preloaded[full] = true;
+    var pre = new Image(); pre.src = full;
+  }
+
   function openLB(img){
     if (!lb) return;
     lastFocus = document.activeElement;
-    lbImg.src = img.currentSrc || img.src;
+    var current = img.currentSrc || img.src;
+    var full = img.getAttribute('data-full') || current;
     lbImg.alt = img.alt;
     lbTitle.textContent = img.getAttribute('data-lb-title') || '';
     lbTool.textContent = img.getAttribute('data-lb-tool') || '';
+    if (full !== current){
+      lbImg.src = current;                 /* instant preview from the loaded thumbnail */
+      lb.classList.add('is-loading');
+      var hi = new Image();
+      hi.onload = function(){ lbImg.src = full; lb.classList.remove('is-loading'); };
+      hi.onerror = function(){ lb.classList.remove('is-loading'); }; /* keep the preview */
+      hi.src = full;
+    } else {
+      lbImg.src = full;
+      lb.classList.remove('is-loading');
+    }
     lb.dataset.open = 'true';
     document.body.style.overflow = 'hidden';
     lbClose.focus();
@@ -2625,12 +2659,18 @@ a.pub:hover .pub__doi{ background: var(--color-accent); border-color: var(--colo
   function closeLB(){
     if (!lb) return;
     lb.dataset.open = 'false';
+    lb.classList.remove('is-loading');
     document.body.style.overflow = '';
     if (lastFocus) lastFocus.focus();
   }
   $$('[data-zoom]').forEach(function(btn){
+    var img = document.getElementById(btn.dataset.zoom);
+    var warm = function(){ preloadFull(img); };   /* start fetching full-res on intent */
+    btn.addEventListener('mouseenter', warm);
+    btn.addEventListener('focus', warm);
+    var fig = btn.closest('.fig');
+    if (fig) fig.addEventListener('mouseenter', warm);
     btn.addEventListener('click', function(){
-      var img = document.getElementById(btn.dataset.zoom);
       if (img && img.naturalWidth > 0) openLB(img);
     });
   });
